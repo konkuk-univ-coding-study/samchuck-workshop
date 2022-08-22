@@ -3,14 +3,14 @@ package konkuk.samchuck.controller;
 import konkuk.samchuck.domain.User;
 import konkuk.samchuck.response.Response;
 import konkuk.samchuck.service.UserService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
 
 @RestController
+@RequestMapping("/api/signup")
 public class SignupController {
 
     private final UserService userService;
@@ -19,7 +19,7 @@ public class SignupController {
         this.userService = userService;
     }
 
-    @PostMapping("/api/signup/validate/duplicate")
+    @PostMapping("/validate/duplicate")
     public Response validateDuplicate(Map<String, String> userId) {
         try {
             userService.checkDuplicate(userId.get("id"));
@@ -29,7 +29,7 @@ public class SignupController {
         }
     }
 
-    @PostMapping("/api/signup")
+    @PostMapping("")
     public Response signup(Map<String, String> signupForm) {
         User newUser = new User(signupForm.get("id"), signupForm.get("password"));
         try {
