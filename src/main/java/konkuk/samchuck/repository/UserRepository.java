@@ -1,4 +1,4 @@
-package konkuk.samchuck.service.repository;
+package konkuk.samchuck.repository;
 
 import konkuk.samchuck.domain.User;
 import org.slf4j.Logger;
