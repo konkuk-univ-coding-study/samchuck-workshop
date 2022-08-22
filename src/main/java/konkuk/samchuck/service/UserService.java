@@ -16,6 +16,7 @@ public class UserService {
 
     @Transactional
     public boolean isDuplicate(String id) {
-
+        return userRepository.findByUserid(id)
+                .isPresent();
     }
 }
