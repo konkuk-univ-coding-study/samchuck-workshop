@@ -12,7 +12,6 @@ public class UserRepository {
 
     private final EntityManager em;
 
-    @Autowired
     public UserRepository(EntityManager em) {
         this.em = em;
     }
