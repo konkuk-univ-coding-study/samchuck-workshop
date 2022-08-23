@@ -26,10 +26,14 @@ public class UserService {
 
     @Transactional
     public void signup(User user) {
-        String original = user.getPassword();
-        String salt = SHA256Util.generateSalt();
-        String encoded = SHA256Util.getEncrypt(original, salt);
+        String encoded = encodePassword(user);
         user.setPassword(encoded);
         userRepository.save(user);
+    }
+
+    private String encodePassword(User user) {
+        String original = user.getPassword();
+        String salt = SHA256Util.generateSalt();
+        return SHA256Util.getEncrypt(original, salt);
     }
 }
