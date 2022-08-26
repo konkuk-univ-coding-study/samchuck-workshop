@@ -17,6 +17,9 @@ public class User {
     @Column(name = "password")
     private String password;
 
+    @Column(name = "activated")
+    private boolean isActive;
+
     public User() {
     }
 
@@ -39,5 +42,13 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
     }
 }
