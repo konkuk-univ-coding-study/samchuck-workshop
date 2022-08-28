@@ -26,7 +26,7 @@ public class SignupController {
     }
 
     @PostMapping("/validate/duplicate")
-    public ResponseEntity<ResponseDTO> validateDuplicate(Map<String, String> userId) {
+    public ResponseEntity<ResponseDTO> validateDuplicate(@RequestBody Map<String, String> userId) {
         try {
             userService.checkValidUseridForm(userId.get("userid"));
             userService.checkDuplicate(userId.get("userid"));
