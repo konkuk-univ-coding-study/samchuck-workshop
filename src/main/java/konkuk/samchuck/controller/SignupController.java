@@ -3,6 +3,7 @@ package konkuk.samchuck.controller;
 import konkuk.samchuck.domain.User;
 import konkuk.samchuck.dto.ResponseDTO;
 import konkuk.samchuck.dto.UserDTO;
+import konkuk.samchuck.exceptions.IllegalPasswordFormatException;
 import konkuk.samchuck.exceptions.IllegalUseridConflictException;
 import konkuk.samchuck.exceptions.IllegalUseridFormatException;
 import konkuk.samchuck.service.UserService;
@@ -50,6 +51,12 @@ public class SignupController {
             userService.signup(newUser);
             return new ResponseEntity<>(
                     new ResponseDTO("success", "signup ok"), HttpStatus.OK);
+        } catch (IllegalUseridFormatException e) {
+            return new ResponseEntity<>(
+                    new ResponseDTO("fail", "not supported id format"), HttpStatus.BAD_REQUEST);
+        } catch (IllegalPasswordFormatException e) {
+            return new ResponseEntity<>(
+                    new ResponseDTO("fail", "not supported pw format"), HttpStatus.BAD_REQUEST);
         } catch (IllegalUseridConflictException e) {
             return new ResponseEntity<>(
                     new ResponseDTO("fail", "conflict user id"), HttpStatus.CONFLICT);
