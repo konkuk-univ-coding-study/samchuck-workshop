@@ -23,6 +23,7 @@ jwt:
   token-validity-in-seconds: 86400
 
 server:
+  port: 8443
   ssl:
     enabled: true
     key-store: classpath:keystore.p12
