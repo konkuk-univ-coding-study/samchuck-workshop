@@ -9,10 +9,7 @@ import konkuk.samchuck.exceptions.IllegalUseridFormatException;
 import konkuk.samchuck.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
@@ -26,11 +23,11 @@ public class SignupController {
         this.userService = userService;
     }
 
-    @PostMapping("/validate/duplicate")
-    public ResponseEntity<ResponseDTO> validateDuplicate(Map<String, String> userId) {
+    @GetMapping("/validate/duplicate")
+    public ResponseEntity<ResponseDTO> validateDuplicate(@RequestParam("userid") String userid) {
         try {
-            userService.checkValidUseridForm(userId.get("userid"));
-            userService.checkDuplicate(userId.get("userid"));
+            userService.checkValidUseridForm(userid);
+            userService.checkDuplicate(userid);
             return new ResponseEntity<>(
                     new ResponseDTO("success", "available user id"), HttpStatus.OK);
         } catch (IllegalUseridFormatException e) {
