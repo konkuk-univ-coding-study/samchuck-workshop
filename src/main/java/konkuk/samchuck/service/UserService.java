@@ -1,6 +1,9 @@
 package konkuk.samchuck.service;
 
 import konkuk.samchuck.domain.User;
+import konkuk.samchuck.exceptions.IllegalPasswordFormatException;
+import konkuk.samchuck.exceptions.IllegalUseridFormatException;
+import konkuk.samchuck.exceptions.IllegalUseridConflictException;
 import konkuk.samchuck.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -10,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.regex.Pattern;
 
 @Service
 @Transactional
@@ -27,8 +31,15 @@ public class UserService implements UserDetailsService {
     public void checkDuplicate(String id) {
         userRepository.findByUserid(id)
                 .ifPresent(user -> {
-                    throw new IllegalArgumentException();
+                    throw new IllegalUseridConflictException("입력된 사용자 아이디가 중복됩니다.");
                 });
+    }
+
+    public void checkValidUseridForm(String id) {
+        String pattern = "^[a-zA-Z0-9!@#$%^&*(){}<>?]{5,20}$";
+        if (!Pattern.matches(pattern, id)) {
+            throw new IllegalUseridFormatException("입력된 사용자 아이디가 형식에 맞지 않습니다.");
+        }
     }
 
     @Transactional
@@ -37,6 +48,13 @@ public class UserService implements UserDetailsService {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setActive(true);
         userRepository.save(user);
+    }
+
+    public void checkValidPasswordForm(String password) {
+        String pattern = "^[a-zA-Z0-9!@#$%^&*(){}<>?]{8,20}$";
+        if (!Pattern.matches(pattern, password)) {
+            throw new IllegalPasswordFormatException("입력된 비밀번호가 형식에 맞지 않습니다.");
+        }
     }
 
     @Override
