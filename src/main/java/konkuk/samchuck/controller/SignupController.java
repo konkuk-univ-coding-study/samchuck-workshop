@@ -3,6 +3,8 @@ package konkuk.samchuck.controller;
 import konkuk.samchuck.domain.User;
 import konkuk.samchuck.dto.ResponseDTO;
 import konkuk.samchuck.dto.UserDTO;
+import konkuk.samchuck.exceptions.IllegalUseridConflictException;
+import konkuk.samchuck.exceptions.IllegalUseridFormatException;
 import konkuk.samchuck.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,10 +28,16 @@ public class SignupController {
     @PostMapping("/validate/duplicate")
     public ResponseEntity<ResponseDTO> validateDuplicate(Map<String, String> userId) {
         try {
-            userService.checkDuplicate(userId.get("id"));
-            return new ResponseEntity<>(new ResponseDTO("success", "available user id"), HttpStatus.OK);
-        } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(new ResponseDTO("fail", "conflict user id"), HttpStatus.CONFLICT);
+            userService.checkValidUseridForm(userId.get("userid"));
+            userService.checkDuplicate(userId.get("userid"));
+            return new ResponseEntity<>(
+                    new ResponseDTO("success", "available user id"), HttpStatus.OK);
+        } catch (IllegalUseridFormatException e) {
+            return new ResponseEntity<>(
+                    new ResponseDTO("fail", "not supported format"), HttpStatus.BAD_REQUEST);
+        } catch (IllegalUseridConflictException e) {
+            return new ResponseEntity<>(
+                    new ResponseDTO("fail", "conflict user id"), HttpStatus.CONFLICT);
         }
     }
 
@@ -37,10 +45,14 @@ public class SignupController {
     public ResponseEntity<ResponseDTO> signup(@RequestBody UserDTO userDTO) {
         User newUser = new User(userDTO.getUserid(), userDTO.getPassword());
         try {
+            userService.checkValidUseridForm(userDTO.getUserid());
+            userService.checkValidPasswordForm(userDTO.getPassword());
             userService.signup(newUser);
-            return new ResponseEntity<>(new ResponseDTO("success", "signup ok"), HttpStatus.OK);
-        } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(new ResponseDTO("fail", "conflict user id"), HttpStatus.CONFLICT);
+            return new ResponseEntity<>(
+                    new ResponseDTO("success", "signup ok"), HttpStatus.OK);
+        } catch (IllegalUseridConflictException e) {
+            return new ResponseEntity<>(
+                    new ResponseDTO("fail", "conflict user id"), HttpStatus.CONFLICT);
         }
     }
 }
