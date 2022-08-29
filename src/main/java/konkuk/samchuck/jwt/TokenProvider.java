@@ -15,10 +15,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
@@ -43,7 +40,7 @@ public class TokenProvider implements InitializingBean {
         byte[] keyBytes = Decoders.BASE64.decode(secret);
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
-//915A27039D447019B7E9F0BC9D3F7D6D03E417D0D98D57279984376CACA11B44
+
     public String createToken(Authentication authentication) {
         String authorities = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
@@ -67,13 +64,8 @@ public class TokenProvider implements InitializingBean {
                 .parseClaimsJws(token)
                 .getBody();
 
-        List<SimpleGrantedAuthority> authorities = Arrays.stream(claims.get(AUTHORITIES_KEY)
-                        .toString().split(","))
-                .map(SimpleGrantedAuthority::new)
-                .collect(Collectors.toList());
-
-        User principal = new User(claims.getSubject(), "", authorities);
-        return new UsernamePasswordAuthenticationToken(principal, token, authorities);
+        User principal = new User(claims.getSubject(), "", new ArrayList<>());
+        return new UsernamePasswordAuthenticationToken(principal, token, new ArrayList<>());
     }
 
     public boolean validateToken(String token) {
@@ -93,5 +85,14 @@ public class TokenProvider implements InitializingBean {
             logger.info("JWT 토큰이 잘못됨");
         }
         return false;
+    }
+
+    public String getSubject(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .getSubject();
     }
 }
