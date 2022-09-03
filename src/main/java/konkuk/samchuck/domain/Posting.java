@@ -3,19 +3,18 @@ package konkuk.samchuck.domain;
 import lombok.*;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "Board")
+@Table(name = "Posting")
 @NoArgsConstructor
 @Getter
 @Setter
-public class Board {
+public class Posting {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "board_id")
+    @Column(name = "posting_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)

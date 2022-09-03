@@ -25,8 +25,8 @@ public class Reply {
     private User author;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "board_id")
-    private Board board;
+    @JoinColumn(name = "posting_id")
+    private Posting posting;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "re_reply_id")
