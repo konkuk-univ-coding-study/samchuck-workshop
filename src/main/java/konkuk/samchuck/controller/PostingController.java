@@ -26,7 +26,7 @@ public class PostingController {
         this.postingService = postingService;
     }
 
-    public ResponseEntity<ResponseDTO> saveBoard(HttpServletRequest request, @RequestBody PostingDTO postingDTO) {
+    public ResponseEntity<ResponseDTO> savePosting(HttpServletRequest request, @RequestBody PostingDTO postingDTO) {
         Posting posting = new Posting();
         String username = (String) request.getAttribute("username");
         User curUser = userService.findUser(username);
