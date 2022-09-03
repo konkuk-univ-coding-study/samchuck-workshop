@@ -57,6 +57,11 @@ public class UserService implements UserDetailsService {
         }
     }
 
+    public User findUser(String userid) {
+        return userRepository.findByUserid(userid)
+                .orElseThrow(() -> new UsernameNotFoundException(userid + " -> 존재하지 않는 유저!!"));
+    }
+
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String userid) throws UsernameNotFoundException {
