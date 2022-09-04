@@ -4,6 +4,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "Posting")
@@ -30,5 +31,8 @@ public class Posting {
 
     @Column(name = "modified_date")
     private LocalDateTime modifiedDate;
+
+    @OneToMany(mappedBy = "posting", cascade = CascadeType.REMOVE)
+    private List<Reply> replies;
 
 }
