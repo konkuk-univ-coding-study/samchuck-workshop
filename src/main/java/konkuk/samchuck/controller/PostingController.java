@@ -1,6 +1,7 @@
 package konkuk.samchuck.controller;
 
 import konkuk.samchuck.domain.Posting;
+import konkuk.samchuck.domain.Reply;
 import konkuk.samchuck.domain.User;
 import konkuk.samchuck.dto.*;
 import konkuk.samchuck.service.PostingService;
@@ -10,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -46,4 +48,25 @@ public class PostingController {
         postings.forEach(posting -> responseAllPostingsDTO.getPostings().add(new PostingInfoDTO(posting)));
         return new ResponseEntity<>(responseAllPostingsDTO, HttpStatus.OK);
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ResponsePostingDTO> getPosting(@PathVariable("id") Long id) {
+        Posting posting = postingService.getPosting(id);
+        List<ResponseReplyDTO> replies = new ArrayList<>();
+        posting.getReplies()
+                .forEach(reply -> postingService.dfs(replies, reply));
+
+        ResponsePostingDTO responsePostingDTO = ResponsePostingDTO.builder()
+                .author(posting.getAuthor().getUserId())
+                .title(posting.getTitle())
+                .content(posting.getContent())
+                .createDate(posting.getCreateDate())
+                .modifiedDate(posting.getModifiedDate())
+                .replies(replies)
+                .build();
+
+        return new ResponseEntity<>(responsePostingDTO, HttpStatus.OK);
+    }
+
+
 }
