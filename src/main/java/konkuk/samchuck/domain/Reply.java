@@ -4,6 +4,8 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "Reply")
@@ -30,7 +32,10 @@ public class Reply {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "re_reply_id")
-    private Reply reReply;
+    private Reply reReplyParent;
+
+    @OneToMany(mappedBy = "reReplyParent")
+    private List<Reply> reReplies = new ArrayList<>();
 
     @Column(name = "create_date")
     private LocalDateTime createDate;
