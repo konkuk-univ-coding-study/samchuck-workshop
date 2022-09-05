@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class PostingRepository {
@@ -16,10 +17,14 @@ public class PostingRepository {
         this.em = em;
     }
 
-    public List<Posting> findBoardByAuthor(User author) {
+    public List<Posting> findPostingByAuthor(User author) {
         return em.createQuery("select posting from Posting posting where posting.author = :author", Posting.class)
                 .setParameter("author", author)
                 .getResultList();
+    }
+
+    public Optional<Posting> findPostingById(Long id) {
+        return Optional.ofNullable(em.find(Posting.class, id));
     }
 
     public List<Posting> findAllBySize(int start) {
